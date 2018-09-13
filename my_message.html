@@ -1,0 +1,404 @@
+<#include "../include/header.html">
+
+<!-- 引入bootstrap.js文件 -->
+<script src="${base.contextPath}/lib/bootstrap-3.3.7/js/bootstrap.js"></script>
+<script src="${base.contextPath}/lib/js_util/ajax.js"></script>
+<!-- 引入layer所需css和js文件 -->
+<link rel="stylesheet" href="${base.contextPath}/lib/layui/css/layui.css" media="all">
+<script src="${base.contextPath}/lib/layui/layui.js"></script>
+
+
+<script type="text/javascript">
+
+    var pageNum = 1;
+    var pageSizeNum = 4;
+
+    var date = {userName : 'leizhe',page : pageNum,pageSize :pageSizeNum};
+    // date.userName = 'zhangsan';
+    var countNum;
+    var reslutDate;
+    reslutDate = myAjax("${base.contextPath}/hawk/my/message/myComment",JSON.stringify(date));
+    countNum = reslutDate.rows[0].total;
+    var status = 'myComment';
+
+    //评论方法
+    function myComment(obj) {
+        status = 'myComment';
+
+        //endregion
+        //region 获取数据源
+        reslutDate = myAjax("${base.contextPath}/hawk/my/message/myComment",JSON.stringify(date));
+        // 获取报表所需数据
+        var resultList = reslutDate.rows;
+        //endregion
+        //region 将数据源进行字符串拼接
+        var result ='<div class="tab-pane fade in active" id="comment" style="margin-top: 20px;margin-left: 40px">\n' +
+            '            <ul class="list-unstyled">';
+        for (var i = 0;i <resultList.length;i++){
+            var nowList = resultList[i];
+            var myReplay = 'reply'+i;
+            result += '<li style="margin-top: 20px">\n' +
+                '                    <div style="height:30px">\n' +
+                '                        <div style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">'+nowList.userName+'</div>\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">\n' +
+                '                            '+nowList.creationDate+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">\n' +
+                '                        '+nowList.content+'' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;background-color:#e4e4e4;">\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:\n' +
+                '                        </div>\n' +
+                '                        <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">\n' +
+                '                            &nbsp;&nbsp;&nbsp;'+nowList.objectName+'' +
+                '                        </div>\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:80%;margin-top:5px">\n' +
+                '                             <span onclick="reply('+i+')" type="reply">回复</span>\n' +
+                '                        </div>\n'+
+                '                    </div>\n' +
+                '                    <div id="'+myReplay+'"></div>\n'+
+                '                </li>';
+        }
+        result  += '</ul></div>';
+        //endregion
+
+        $("#myTabContent").html(result);
+        //处理分页
+        countNum = reslutDate.rows[0].total;
+        obj.count = countNum;
+
+    }
+
+    //@我的
+    function aitewode(obj) {
+        status = 'aitewode';
+        //region 获取数据源
+        reslutDate = myAjax("${base.contextPath}/hawk/my/message/aitewode",JSON.stringify(date));
+        // 获取报表所需数据
+        var resultList = reslutDate.rows;
+        //endregion
+
+        //region 将数据源进行字符串拼接
+        var result ='<div class="tab-pane fade in active" id="comment" style="margin-top: 20px;margin-left: 40px">\n' +
+            '            <ul class="list-unstyled">';
+        for (var i = 0;i <resultList.length;i++){
+            var nowList = resultList[i];
+            result += '<li style="margin-top: 20px">\n' +
+                '                    <div style="height:30px">\n' +
+                '                        <div style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">'+nowList.userName+'</div>\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">\n' +
+                '                            '+nowList.creationDate+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">\n' +
+                '                        '+nowList.aiteMy+'' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;background-color:#e4e4e4;">\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:\n' +
+                '                        </div>\n' +
+                '                        <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">\n' +
+                '                            &nbsp;&nbsp;&nbsp;'+nowList.objectName+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </li>';
+        }
+        result  += '</ul></div>';
+        //endregion
+
+        $("#myTabContent").html(result);
+        //处理分页
+        countNum = reslutDate.rows[0].total;
+        obj.count = countNum;
+
+
+    }
+
+    //赞我的
+    function likeMe(obj) {
+        status = 'likeMe';
+        //region 获取数据源
+        reslutDate = myAjax("${base.contextPath}/hawk/my/message/likeMe",JSON.stringify(date));
+        // 获取报表所需数据
+        var resultList = reslutDate.rows;
+        //endregion
+
+        //region 将数据源进行字符串拼接
+        var result ='<div class="tab-pane fade in active" id="comment" style="margin-top: 20px;margin-left: 40px">\n' +
+            '            <ul class="list-unstyled">';
+        for (var i = 0;i <resultList.length;i++){
+            var nowList = resultList[i];
+            result += '<li style="margin-top: 20px">\n' +
+                '                    <div style="height:30px">\n' +
+                '                        <div style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">'+nowList.userName+'</div>\n' +
+                '                        <div style="font-size:16px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">赞了你的'+nowList.relType+' </div>'+
+                '                        <div style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">\n' +
+                '                            '+nowList.creationDate+'' +
+                '                        </div>\n' +
+                '                    </div>\n';
+            if (nowList.message != null){
+                result +=
+                    '                    <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">\n' +
+                    '                        '+nowList.message+'' +
+                    '                    </div>\n';
+            }
+            result +=
+                '                    <div style="height:30px;background-color:#e4e4e4;">\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:\n' +
+                '                        </div>\n' +
+                '                        <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">\n' +
+                '                            &nbsp;&nbsp;&nbsp;'+nowList.objectName+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </li>';
+
+
+
+
+        }
+        result  += '</ul></div>';
+        //endregion
+
+        $("#myTabContent").html(result);
+        //处理分页
+        countNum = reslutDate.rows[0].total;
+
+        obj.count = countNum;
+
+
+    }
+
+    //系统消息
+    function systemMessage(obj) {
+        status = 'systemMessage';
+        //region 获取数据源
+        reslutDate = myAjax("${base.contextPath}/hawk/my/message/systemMessage",JSON.stringify(date));
+        // 获取报表所需数据
+        var resultList = reslutDate.rows;
+        //endregion
+
+        //region 将数据源进行字符串拼接
+        var result ='<div class="tab-pane fade in active" id="comment" style="margin-top: 20px;margin-left: 40px">\n' +
+            '            <ul class="list-unstyled">';
+        for (var i = 0;i <resultList.length;i++){
+            var nowList = resultList[i];
+            result += '<li style="margin-top: 20px">\n' +
+                '                    <div style="height:30px">\n' +
+                '                        <div style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">'+nowList.userName+'</div>\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">\n' +
+                '                            '+nowList.creationDate+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">\n' +
+                '                        '+nowList.sysMessage+'' +
+                '                    </div>\n' +
+                '                    <div style="height:30px;background-color:#e4e4e4;">\n' +
+                '                        <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:\n' +
+                '                        </div>\n' +
+                '                        <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">\n' +
+                '                            &nbsp;&nbsp;&nbsp;'+nowList.objectName+'' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </li>';
+        }
+        result  += '</ul></div>';
+        //endregion
+
+        $("#myTabContent").html(result);
+        //处理分页
+        countNum = reslutDate.rows[0].total;
+        obj.count = countNum;
+
+    }
+
+    //点击tab触发
+    function tabOnClick(object) {
+        status = object;
+        console.info(status);
+        date.page = pageNum;
+        date.pageSize = pageSizeNum;
+        if (status == 'myComment'){
+            reslutDate = myAjax("${base.contextPath}/hawk/my/message/myComment",JSON.stringify(date));
+            countNum = reslutDate.rows[0].total;
+        }
+        if (status == 'aitewode'){
+            reslutDate = myAjax("${base.contextPath}/hawk/my/message/aitewode",JSON.stringify(date));
+            console.info(reslutDate.rows);
+            countNum = reslutDate.rows[0].total;
+        }
+        if (status == 'likeMe'){
+            reslutDate = myAjax("${base.contextPath}/hawk/my/message/likeMe",JSON.stringify(date));
+            countNum = reslutDate.rows[0].total;
+        }
+        if (status == 'systemMessage'){
+            reslutDate = myAjax("${base.contextPath}/hawk/my/message/systemMessage",JSON.stringify(date));
+            countNum = reslutDate.rows[0].total;
+        }
+        myLayer();
+    }
+
+    // var huifuStatus = true;
+    var tempIndex;
+    //回复
+    function reply(index) {
+        if (tempIndex != null){
+            $('#reply'+tempIndex).html("");
+        }
+        tempIndex = index;
+        var myIndex = '#reply' + index;
+        var tab = '<textarea id="myReply" style="background-color: #d8d8d8" name="" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>\n' +
+            '                         <button style="margin-left: 85%" class="layui-btn layui-btn-primary" onclick="cancel('+index+')">取消</button>\n' +
+            '                         <button style="" class="layui-btn layui-btn-normal" onclick="sendReply('+index+')">发送</button>';
+        $(myIndex).html(tab);
+        /*if(huifuStatus){
+            $(myIndex).html(tab);
+            huifuStatus = false;
+
+        }else {
+            $(myIndex).html("");
+            huifuStatus = true;
+        }*/
+    }
+    //取消
+    function cancel(index) {
+        var myIndex = '#reply' + index;
+        $(myIndex).html("");
+        huifuStatus = true;
+    }
+    //消息发送
+    function  sendReply(index) {
+        // var myreply = '#myreply'+index;
+        var myReply = $("#myReply").val();
+        console.info(index);
+        console.info(myReply);
+        console.info(reslutDate.rows[index]);
+        huifuStatus = false;
+        reply(index);
+    }
+
+
+</script>
+
+
+<body>
+<div id="page-content" style="padding: 3px;margin-left: 5px;margin-right: 5px">
+    <!--tab-->
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active" onclick="tabOnClick('myComment')" style="width: 120px;text-align: center">
+            <a href="#comment" data-toggle="tab">评论</a>
+        </li>
+        <li onclick="tabOnClick('aitewode')">
+            <a href="#ios" data-toggle="tab" style="width: 120px;text-align: center">@我的</a>
+        </li>
+        <li onclick="tabOnClick('likeMe')">
+            <a href="#ios" data-toggle="tab" style="width: 120px;text-align: center">赞</a>
+        </li>
+        <li onclick="tabOnClick('systemMessage')">
+            <a href="#ios" data-toggle="tab" style="width: 120px;text-align: center">系统消息</a>
+        </li>
+    </ul>
+
+    <!--tab对应的tab页-->
+    <div id="myTabContent" class="tab-content">
+        <!--样式模板，不能删除-->
+        <!--<div class="tab-pane fade in active" id="comment" style="margin-top: 20px;margin-left: 40px">
+             <ul class="list-unstyled">
+                 <li  style="margin-top: 20px">
+                     <div style="height:30px">
+                         <div class="messageName" style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">JK</div>
+                         <div style="font-size:16px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">赞了你的评论 </div>
+                         <div  style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">2018-05-18:11:00:00</div>
+                     </div>
+                     <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">@mahe 113434343</div>
+                     <div style="height:30px;background-color:#e4e4e4;">
+                         <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:</div>
+                         <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">工厂建模</div>
+                         <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:80%;margin-top:5px">
+                             &lt;!&ndash; 传参 &ndash;&gt;
+                             <span onclick="reply(1)" type="reply">回复 <span id="myIndex" hidden>1</span></span>
+                         </div>
+                     </div>
+                     &lt;!&ndash;<div id="reply"></div>&ndash;&gt;
+
+                     &lt;!&ndash;传参 &ndash;&gt;
+                     <div id="reply1">
+                         &lt;!&ndash;<textarea id="myReply" style="background-color: #cacaca;" name="" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                         <button style="margin-left: 85%" class="layui-btn layui-btn-primary" onclick="cancel()">取消</button>
+                         <button class="layui-btn layui-btn-normal" onclick="sendReply()">发送</button>&ndash;&gt;
+                     </div>
+                 </li>
+                 <li  style="margin-top: 20px">
+                     <div style="height:30px">
+                         <div style="font-size:16px;font-family: 微软雅黑;color:#4CA6E1;float:left">JK </div>
+                         <div style="font-size:16px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">赞了你的评论 </div>
+                         <div  style="font-size:14px;font-family: 微软雅黑;color:#333333;float:left;margin-left:50px;">2018-05-18:11:00:00</div>
+                     </div>
+                     <div style="height:30px;font-size:14px;font-family: 微软雅黑;text-align: left;color:#333333;margin-left:10px;">@mahe 113434343</div>
+                     <div style="height:30px;background-color:#e4e4e4;">
+                         <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:5px;margin-top:5px">来源:</div>
+                         <div style="color: #4CA6E1;font-size:14px;font-family: 微软雅黑;float:left;;margin-left:5px;margin-top:5px">工厂建模</div>
+                         <div style="font-size:14px;font-family: 微软雅黑;float:left;margin-left:80%;margin-top:5px">
+                             <span onclick="reply(2)" type="reply">回复</span>
+                         </div>
+                     </div>
+                     <div id="reply2"></div>
+                 </li>
+             </ul>
+         </div>-->
+        <!--<div class="tab-pane fade" id="ios">
+            用于数据展示
+        </div>-->
+
+    </div>
+
+    <!--<div id="pagination" style="margin-top: 20px; position:fixed; bottom:5px;"></div>-->
+    <div id="pagination"></div>
+</div>
+<script>
+
+    //启动页面
+    $(function () {
+        myLayer();
+    });
+
+    function myLayer() {
+        //分页
+        layui.use('laypage', function(){
+            var laypage = layui.laypage;
+            //执行一个laypage实例
+            laypage.render({
+                elem: 'pagination' //注意，这里的 test1 是 ID，不用加 # 号
+                ,count: countNum //数据总数，从服务端得到
+                ,limit:4 //默认展示的条数
+                ,limits:[4, 8]
+                ,theme: '#E4E4E4'//设定颜色
+                ,groups:7 //连续出现的页码个数
+                ,layout:['count','prev','page','next','limit']
+                ,jump:function (obj) {
+                    //region分页
+                    date.page = obj.curr;//当前页
+                    date.pageSize = obj.limit;//当前行
+
+                    if(status == 'myComment'){
+                        myComment(obj);
+                    }
+                    if(status == 'aitewode'){
+                        aitewode(obj);
+                    }
+                    if(status == 'likeMe'){
+                        likeMe(obj);
+                    }
+                    if (status == 'systemMessage'){
+                        systemMessage(obj);
+                    }
+
+                }
+
+            });
+        });
+    }
+
+
+</script>
+</body>
+</html>
